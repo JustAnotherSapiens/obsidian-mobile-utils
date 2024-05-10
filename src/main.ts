@@ -3,7 +3,12 @@ import {
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	addIcon,
 } from 'obsidian';
+
+import {
+	DUPLICATE_LINES_ICON,
+} from 'utils/constants';
 
 
 
@@ -22,7 +27,21 @@ export default class MobileUtilsPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		this.addSettingTab(new MobileUtilsSettingTab(this.app, this));
+
+		addIcon('arrows-down-from-line-to-line', DUPLICATE_LINES_ICON);
+
+		this.addCommand({
+			id: 'duplicate-line',
+			name: 'Duplicate Line',
+			icon: 'arrows-down-from-line-to-line',
+			editorCallback: (editor) => {
+				const cursor = editor.getCursor();
+				const line = editor.getLine(cursor.line);
+				editor.replaceRange(line + '\n', {line: cursor.line, ch: 0});
+			}
+		});
+
+		// this.addSettingTab(new MobileUtilsSettingTab(this.app, this));
 	}
 
 	onunload() {
